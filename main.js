@@ -1,21 +1,48 @@
+var roleHarvester = require('role.harvester');
+var roleBuilder = require('role.builder');
+var roleUpgrader = require('role.upgrader');
+var creator = require('createCreep');
+
 module.exports.loop = function () {
 
-    for(var i in Game.spawns){
-        Game.spawns[i].createCreep([WORK,CARRY,CARRY,MOVE,MOVE]);
-    }
+var harvesters = 0;
+var builders = 0;
+var upgraders = 0;
 
     for(var c in Game.creeps){
+
         var creep = Game.creeps[c];
 
-        if(creep.carryCapacity > creep.carry.energy){
-            var source = creep.pos.findClosestByPath(FIND_SOURCES);
-            if(creep.harvest(source) == ERR_NOT_IN_RANGE)
-                creep.moveTo(source);
-            }
+        switch(creep.memory.role){
+            case "harvester": harvesters++; break;
+            case "builder": builders++; break;
+            case "upgrader": upgraders++; break;
+        }
 
-            else{
-                if(creep.transfer(Game.spawns.OverRustle, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-                creep.moveTo(Game.spawns.OverRustle);
-            }
+
+        if(creep.memory.role == "harvester")
+            roleHarvester.run(creep);
+        else if (creep.memory.role == "builder")
+            roleBuilder.run(creep);
+        else if (creep.memory.role == "upgrader")
+            roleUpgrader.run(creep);
     }
+
+    if(harvesters < 4){
+        creator.run("harvester");
+    }
+    else
+        console.log("no harvesters needed");
+
+    if(upgraders < 2){
+        creator.run("upgrader");
+    }
+    else
+        console.log("no upgraders needed");
+
+    if(builders < 2){
+        creator.run("builder");
+    }
+    else
+        console.log("no builders needed");
 };
