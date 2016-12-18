@@ -9,7 +9,7 @@ module.exports = {
                             structure.structureType == STRUCTURE_SPAWN ||
                             structure.structureType == STRUCTURE_STORAGE ||
                             structure.structureType == STRUCTURE_CONTAINER ||
-                            structure.structureType == STRUCTURE_TOWER) && structure.energy > structure.energyCapacity / 2;
+                            structure.structureType == STRUCTURE_TOWER);
                 }
             });
 
@@ -29,6 +29,9 @@ module.exports = {
                 if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0]);
                 }
+            }
+            else{
+                creep.moveTo(Game.flags["Afk-Flag"]);
             }
         }
 
