@@ -33,7 +33,7 @@ module.exports = {
             });
 
             if(loc.length != 0){
-                if(loc[0].transferEnergy(creep) == ERR_NOT_IN_RANGE) {
+                if(creep.withdraw(loc[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(loc[0]);
                 }
             }
