@@ -14,8 +14,16 @@ module.exports = {
             });
 
             if(loc.length != 0){
-                if(creep.withdraw(loc[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(loc[0]);
+                var target = loc[0];
+                for(var x=0; x<loc.length; x++){
+                    if(loc[x].energy > 0){
+                        target = loc[x];
+                        break;
+                    }
+                }
+
+                if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
                 }
             }
         }

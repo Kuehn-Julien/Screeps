@@ -8,9 +8,9 @@ var distructor = require('killCreep');
 module.exports.loop = function () {
 
     var wantedHarvester = 4;
-    var wantedBuilders = 1;
-    var wantedUpgraders = 1;
-    var wantedRepairers = 1;
+    var wantedBuilders = 2;
+    var wantedUpgraders = 2;
+    var wantedRepairers = 2;
 
     var harvesters = 0;
     var builders = 0;
