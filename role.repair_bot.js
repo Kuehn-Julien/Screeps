@@ -8,7 +8,7 @@ module.exports = {
 
         checkWork.run(creep);
 
-        if(creep.memory.working){
+        if(creep.memory.working  && !creep.memory.interrupt){
             var targets = creep.room.find(FIND_STRUCTURES, {
                 filter: object => object.hits < object.hitsMax
             });
@@ -24,7 +24,8 @@ module.exports = {
             }
 
         } else{
-            getEnergy.run(creep);
+            if(!creep.memory.interrupt)
+                getEnergy.run(creep);
         }
 
     }
