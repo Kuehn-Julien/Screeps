@@ -33,8 +33,9 @@ module.exports = {
             });
 
             if(loc.length != 0){
-                creep.moveTo(loc[0]);
-                loc[0].transferEnergy(creep);
+                if(loc[0].transferEnergy(creep) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(loc[0]);
+                }
             }
             }
         }
