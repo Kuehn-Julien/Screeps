@@ -14,8 +14,9 @@ module.exports = {
             });
 
             if(loc.length != 0){
-                creep.moveTo(loc[0]);
-                loc[0].transferEnergy(creep);
+                if(creep.withdraw(loc[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(loc[0]);
+                }
             }
         }
         else{
