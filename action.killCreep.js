@@ -7,9 +7,9 @@ module.exports = {
                 creep.moveTo(Game.spawns.OverRustle);
         }
         else{
-            creep.moveTo(Game.flags["Death-Flag"]);
+            creep.suicide();
         }
 
     }
-    
+
 }
