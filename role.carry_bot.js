@@ -16,6 +16,13 @@ module.exports = {
                 }
             });
 
+            var target = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
+            if(target) {
+                if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
+                }
+            }
+
             if(loc.length != 0){
                 var num = 0;
                 var pos = 0;
@@ -29,7 +36,16 @@ module.exports = {
                 if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                     creep.moveTo(target);
                 }
+
+            }else{
+                var target = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
+                if(target) {
+                    if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(target);
+                    }
+                }
             }
+
         } else{
             storeEnergy.run(creep);
         }

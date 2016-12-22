@@ -23,13 +23,13 @@ module.exports.loop = function () {
     var creepType = ["harvester_bot", "miner_bot", "carry_bot",
                             "upgrader_bot", "builder_bot", "repair_bot", "loot_bot"];
     var creepsNow = [0,0,0,0,0,0,0];
-    var creepsNeeded = [3,0,0,0,0,0,1];
+    var creepsNeeded = [0,4,2,1,2,1,0];
 
     for(var c in Game.creeps){
 
         var creep = Game.creeps[c];
 
-        if((creep.ticksToLive >= 50) && !creep.spawning){
+        if((creep.ticksToLive >= 40) && !creep.spawning){
 
             var x = creepType.findIndex(getCreepRole);
             creepsNow[x]++;
@@ -55,6 +55,23 @@ module.exports.loop = function () {
 
     }
 
+    for(var c in Game.creeps){
+        var creep = Game.creeps[c];
+        var y = creepType.findIndex(getMinerRole);
+        if(creepsNow[y] < creepsNeeded[y] && (creep.memory.role != "miner_bot" || creep.memory.role != "carry_bot")){
+            creep.memory.interrupt = true;
+        } else {
+            creep.memory.interrupt = false;
+        }
+        var y = creepType.findIndex(getCarryRole);
+        if(creepsNow[y] < creepsNeeded[y] && (creep.memory.role != "miner_bot" || creep.memory.role != "carry_bot")){
+            creep.memory.interrupt = true;
+        } else {
+            creep.memory.interrupt = false;
+        }
+
+    }
+
     // Build creeps
     for(var x=0; x<creepType.length; x++){
         if(creepsNow[x] < creepsNeeded[x]){
@@ -67,4 +84,13 @@ module.exports.loop = function () {
     function getCreepRole(element) {
         return element == creep.memory.role;
     }
+
+    function getMinerRole(element) {
+        return element == "miner_bot";
+    }
+
+    function getCarryRole(element) {
+        return element == "carry_bot";
+    }
+
 }
