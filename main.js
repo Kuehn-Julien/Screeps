@@ -22,7 +22,7 @@ module.exports.loop = function () {
     var creepType = ["harvester_bot", "miner_bot", "carry_bot",
                             "upgrader_bot", "builder_bot", "repair_bot"];
     var creepsNow = [0,0,0,0,0,0];
-    var creepsNeeded = [1,0,0,0,0,0];
+    var creepsNeeded = [2,0,0,0,0,0];
 
     for(var c in Game.creeps){
 
@@ -30,7 +30,6 @@ module.exports.loop = function () {
 
         if((creep.ticksToLive >= 50) && !creep.spawning){
 
-            var x = creepType.findIndex(creep.memory.role);
             creepsNow[x]++;
 
             if(creep.memory.role == "harvester_bot")
@@ -53,7 +52,7 @@ module.exports.loop = function () {
     }
 
     // Build creeps
-    for(var x=0; x<creepsNeeded; x++){
+    for(var x=0; x<creepType.length; x++){
         if(creepsNow[x] < creepsNeeded[x]){
             console.log("Building " + creepType[x] + " right now!");
             creepBuilder.run(creepType[x]);
@@ -61,4 +60,6 @@ module.exports.loop = function () {
         }
     }
 
+        return creep.memory.role;
+    }
 }
