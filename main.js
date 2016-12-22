@@ -30,6 +30,7 @@ module.exports.loop = function () {
 
         if((creep.ticksToLive >= 50) && !creep.spawning){
 
+            var x = creepType.findIndex(getCreepRole);
             creepsNow[x]++;
 
             if(creep.memory.role == "harvester_bot")
@@ -60,6 +61,7 @@ module.exports.loop = function () {
         }
     }
 
+    function getCreepRole(element) {
         return creep.memory.role;
     }
 }
