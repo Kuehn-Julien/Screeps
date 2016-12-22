@@ -16,7 +16,9 @@ module.exports.loop = function () {
         }
     }
 
-    // Harvest->Miner->Carry->Upgrader->Builder->Repair
+    // SET PRIORITY (OF GETTING BUILT) BY CHANGING THE ORDER INSIDE THIS ARRAY
+    // FIRST (HIGHEST PRIO.) -> LAST (LOWEST PRIO.)
+    // creepsNow and creepsNeeded need to be changed accordingly!!!
     var creepType = ["harvester_bot", "miner_bot", "carry_bot",
                             "upgrader_bot", "builder_bot", "repair_bot"];
     var creepsNow = [0,0,0,0,0,0];
@@ -27,14 +29,9 @@ module.exports.loop = function () {
         var creep = Game.creeps[c];
 
         if((creep.ticksToLive >= 50) && !creep.spawning){
-            switch(creep.memory.role){
-                case "harvester_bot": creepsNow[0]++; break;
-                case "miner_bot": creepsNow[1]++; break;
-                case "carry_bot": creepsNow[2]++ break;
-                case "upgrader_bot": creepsNow[3]++; break;
-                case "builder_bot": creepsNow[4]++; break;
-                case "repair_bot": creepsNow[5]++; break;
-            }
+
+            var x = creepType.findIndex(creep.memory.role);
+            creepsNow[x]++;
 
             if(creep.memory.role == "harvester_bot")
                 harvester_bot.run(creep);
@@ -58,7 +55,7 @@ module.exports.loop = function () {
     // Build creeps
     for(var x=0; x<creepsNeeded; x++){
         if(creepsNow[x] < creepsNeeded[x]){
-            console.log("Building " + creepType[x] " right now!");
+            console.log("Building " + creepType[x] + " right now!");
             creepBuilder.run(creepType[x]);
             break;
         }
