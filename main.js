@@ -4,45 +4,35 @@ var upgrader_bot = require('role.upgrader_bot');
 var repair_bot = require('role.repair_bot');
 var carry_bot = require('role.carry_bot');
 var miner_bot = require('role.miner_bot');
+var loot_bot = require('role.loot_bot');
 var creepBuilder = require('action.createCreep');
 var creepKiller = require('action.killCreep');
 
 module.exports.loop = function () {
 
-    var wanted_harvester_bots = 0;
-    var wanted_miner_bots = 3;
-    var wanted_builder_bots = 4;
-    var wanted_upgrader_bots = 2;
-    var wanted_repair_bots = 2;
-    var wanted_carry_bots = 3;
-
-    var harvester_bots = 0;
-    var miner_bots = 0;
-    var builder_bots = 0;
-    var upgrader_bots = 0;
-    var repair_bots = 0;
-    var carry_bots = 0;
-
-    // CLEAN UP CREEPS THAT DIED
+    // CLEAN UP CREEPS THAT DIED FROM MEMORY
     for(var i in Memory.creeps) {
         if(!Game.creeps[i]) {
             delete Memory.creeps[i];
         }
     }
 
+    // SET PRIORITY (OF GETTING BUILT) BY CHANGING THE ORDER INSIDE THIS ARRAY
+    // FIRST (HIGHEST PRIO.) -> LAST (LOWEST PRIO.)
+    // creepsNow and creepsNeeded need to be changed accordingly!!!
+    var creepType = ["harvester_bot", "miner_bot", "carry_bot",
+                            "upgrader_bot", "builder_bot", "repair_bot", "loot_bot"];
+    var creepsNow = [0,0,0,0,0,0,0];
+    var creepsNeeded = [0,4,2,1,2,1,0];
+
     for(var c in Game.creeps){
 
         var creep = Game.creeps[c];
 
-        if((creep.ticksToLive >= 65) && !creep.spawning){
-            switch(creep.memory.role){
-                case "harvester_bot": harvester_bots++; break;
-                case "miner_bot": miner_bots++; break;
-                case "builder_bot": builder_bots++; break;
-                case "upgrader_bot": upgrader_bots++; break;
-                case "repair_bot": repair_bots++; break;
-                case "carry_bot": carry_bots++; break;
-            }
+        if((creep.ticksToLive >= 40) && !creep.spawning){
+
+            var x = creepType.findIndex(getCreepRole);
+            creepsNow[x]++;
 
             if(creep.memory.role == "harvester_bot")
                 harvester_bot.run(creep);
@@ -56,6 +46,8 @@ module.exports.loop = function () {
                 repair_bot.run(creep);
             else if (creep.memory.role == "carry_bot")
                 carry_bot.run(creep);
+            else if (creep.memory.role == "loot_bot")
+                loot_bot.run(creep);
         }
         else{
             creepKiller.run(creep);
@@ -63,41 +55,42 @@ module.exports.loop = function () {
 
     }
 
-    if(carry_bots < wanted_carry_bots){
-        console.log("Creating carry_bots right now!");
-        console.log("Currently there are " + carry_bots + " carry_bots alive!");
-        creepBuilder.run("carry_bot");
-    }
-    else if(miner_bots < wanted_miner_bots){
-        console.log("Creating miner_bots right now!");
-        console.log("Currently there are " + miner_bots + " miner_bots alive!");
-        creepBuilder.run("miner_bot");
-    }
-    else if(harvester_bots < wanted_harvester_bots){
-        console.log("Creating harvester_bot right now!");
-        console.log("Currently there are " + harvester_bots + " harvester_bots alive!");
-        creepBuilder.run("harvester_bot");
-    }
-    else if(upgrader_bots < wanted_upgrader_bots){
-        console.log("Creating upgrader_bot right now!");
-        console.log("Currently there are " + upgrader_bots + " upgrader_bots alive!");
-        creepBuilder.run("upgrader_bot");
-    }
-    else if(repair_bots < wanted_repair_bots){
-        console.log("Creating repair_bot right now!");
-        console.log("Currently there are " + repair_bots + " repair_bots alive!");
-        creepBuilder.run("repair_bot");
-    }
-    else if(builder_bots < wanted_builder_bots){
-        console.log("Creating builder_bot right now!");
-        console.log("Currently there are " + builder_bots + " builder_bots alive!");
-        creepBuilder.run("builder_bot");
-    }
-
-    if((miner_bots >= wanted_miner_bots/2) && (carry_bots >= wanted_carry_bots/2)){
-        for(var c in Game.creeps){
-            var creep = Game.creeps[c];
+    for(var c in Game.creeps){
+        var creep = Game.creeps[c];
+        var y = creepType.findIndex(getMinerRole);
+        if(creepsNow[y] < creepsNeeded[y] && (creep.memory.role != "miner_bot" || creep.memory.role != "carry_bot")){
+            creep.memory.interrupt = true;
+        } else {
             creep.memory.interrupt = false;
         }
+        var y = creepType.findIndex(getCarryRole);
+        if(creepsNow[y] < creepsNeeded[y] && (creep.memory.role != "miner_bot" || creep.memory.role != "carry_bot")){
+            creep.memory.interrupt = true;
+        } else {
+            creep.memory.interrupt = false;
+        }
+
     }
+
+    // Build creeps
+    for(var x=0; x<creepType.length; x++){
+        if(creepsNow[x] < creepsNeeded[x]){
+            console.log("Building " + creepType[x] + " right now!");
+            creepBuilder.run(creepType[x]);
+            break;
+        }
+    }
+
+    function getCreepRole(element) {
+        return element == creep.memory.role;
+    }
+
+    function getMinerRole(element) {
+        return element == "miner_bot";
+    }
+
+    function getCarryRole(element) {
+        return element == "carry_bot";
+    }
+
 }
