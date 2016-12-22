@@ -4,7 +4,7 @@ module.exports = {
 
         switch(creepType){
             case "harvester_bot":
-                var creep = Game.spawns["OverRustle"].createCreep([WORK,WORK,CARRY,CARRY,MOVE,MOVE],null,{role:"harvester_bot"});
+                var creep = Game.spawns["OverRustle"].createCreep([WORK,CARRY,MOVE,MOVE],null,{role:"harvester_bot"});
                 break;
             case "miner_bot":
                 var creep = Game.spawns["OverRustle"].createCreep([WORK,WORK,WORK,WORK,MOVE],null,{role:"miner_bot",working:true});
