@@ -22,7 +22,7 @@ module.exports.loop = function () {
     var creepType = ["harvester_bot", "miner_bot", "carry_bot",
                             "upgrader_bot", "builder_bot", "repair_bot"];
     var creepsNow = [0,0,0,0,0,0];
-    var creepsNeeded = [2,0,0,0,0,0];
+    var creepsNeeded = [3,0,0,0,0,0];
 
     for(var c in Game.creeps){
 
@@ -62,6 +62,6 @@ module.exports.loop = function () {
     }
 
     function getCreepRole(element) {
-        return creep.memory.role;
+        return element == creep.memory.role;
     }
 }
