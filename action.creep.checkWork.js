@@ -12,7 +12,7 @@ module.exports = {
         }
 
         if(creep.memory.interrupt){
-            executeInterrupt.run(creep,true);
+            executeInterrupt.run(creep,false);
         }
 
 
