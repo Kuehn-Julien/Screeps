@@ -10,44 +10,65 @@ module.exports = {
         checkWork.run(creep);
 
         if(!creep.memory.working){
-            var loc = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return(structure.structureType == STRUCTURE_CONTAINER);
-                }
-            });
-
-            var target = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
-            if(target) {
-                if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target);
-                }
+            var sources;
+            if(getDroppedEnergy()){
+                carryEnergy(1);
             }
 
-            if(loc.length != 0){
-                var num = 0;
-                var pos = 0;
-                for(var y=0; y<loc.length; y++){
-                    if(loc[y].store[RESOURCE_ENERGY] > num){
-                        num = loc[y].store[RESOURCE_ENERGY];
-                        pos = y;
-                    }
-                }
-                target = loc[pos];
-                if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(target);
-                }
-
-            }else{
-                var target = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
-                if(target) {
-                    if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target);
-                    }
-                }
+            else if(getContainerEnergy()){
+                carryEnergy(2);
             }
 
         } else{
+            creep.memory.target = null;
             storeEnergy.run(creep);
+        }
+
+        function carryEnergy(t){
+
+            var target = null;
+            if(true){
+                var tmp = 0;
+                var idx;
+                for(var x=0; x<sources.length; x++){
+                    if(sources[x].energy > tmp){
+                        tmp = sources[x].energy;
+                        idx = x;
+                    }
+                }
+
+                target = sources[idx];
+            } else{
+                target = Game.getObjectById(creep.memory.target);
+            }
+
+            if(t == 1){
+                if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
+                }
+            } else{
+                if(creep.withdraw(target) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
+                }
+            }
+
+        }
+
+        function getDroppedEnergy(){
+            sources = creep.room.find(FIND_DROPPED_ENERGY);
+            if(sources.length != 0)
+                return true;
+            return false;
+        }
+
+        function getContainerEnergy(){
+            sources = creep.room.find(FIND_STRUCTURES, {
+                filter: { structureType: STRUCTURE_CONTAINER }
+            });
+
+            if(sources.length != 0)
+                return true;
+            return false;
         }
     }
 

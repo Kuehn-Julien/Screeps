@@ -19,7 +19,7 @@ module.exports = {
                 var creep = Game.spawns["OverRustle"].createCreep([WORK,CARRY,MOVE,MOVE],null,{role:"repair_bot",working:true,interrupt:false});
                 break;
             case "carry_bot":
-                var creep = Game.spawns["OverRustle"].createCreep([CARRY,CARRY,MOVE,MOVE],null,{role:"carry_bot",working:true});
+                var creep = Game.spawns["OverRustle"].createCreep([CARRY,CARRY,MOVE],null,{role:"carry_bot",working:true});
                 break;
             case "loot_bot":
                 var creep = Game.spawns["OverRustle"].createCreep([CARRY,CARRY,MOVE,MOVE],null,{role:"loot_bot",working:true,targetFlag:"Flag1",targetReached:false,success:false});
